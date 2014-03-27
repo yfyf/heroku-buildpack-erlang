@@ -1,7 +1,0 @@
-#!/bin/sh
-
-cat << EOF
----
-config_vars:
-  PATH: /app/otp/bin:/usr/bin:/bin
-EOF
