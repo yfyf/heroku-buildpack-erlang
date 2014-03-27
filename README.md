@@ -1,38 +1,28 @@
-## Heroku buildpack: Erlang
+## Heroku buildpack: Erlang + rebar + make
 
-This is a Heroku buildpack for Erlang apps. It uses [Rebar](https://github.com/basho/rebar).
+This is a fork of the
+['official'](https://github.com/archaelus/heroku-buildpack-erlang/) Heroku
+buildpack for Erlang apps.
 
+Your project should contain a `Makefile` and it is assumed that
+it can be built with `make` and started with `make go`.
 
-### Configure your Heroku App
+The Erlang version is fixed to R16B03-1. If it were possible to pass an ENV
+variable to Heroku, you could override it with the env var `OTP_VERSION`. Same
+for `REBAR_VSN`. See [compile.mk](bin/compile.mk) for details. I have no idea
+if it's possible. If not, just fork and bump the version. Or use the
+multi-buildpacks and set it there. Or something.
 
-    $ heroku config:add BUILDPACK_URL="https://github.com/archaelus/heroku-buildpack-erlang.git" -a YOUR_APP
+The goal here is to have a non-intrusive buildpack, so that you don't have to
+pollute your project with Heroku specific files.
+
+### Configure your Heroku app to use this buildpack:
+
+    heroku config:add \
+        BUILDPACK_URL="https://github.com/yfyf/heroku-buildpack-erlang.git" \
+        -a YOUR_APP
 
 or
-    $ heroku create --buildpack "https://github.com/archaelus/heroku-buildpack-erlang.git"
 
-### Select an Erlang version
-
-The Erlang/OTP release version that will be used to build and run your application is now sourced from a dotfile called `.preferred_otp_version`. It needs to be the branch or tag name from the http://github.com/erlang/otp repository, and further, needs to be one of the versions that precompiled binaries are available for.
-
-Currently supported OTP versions:
-
-* master (R17B pre)
-* master-pu (R16B pre)
-* OTP_R15B
-* OTP_R15B01
-* OTP_R15B02
-* OTP_R16B
-* OTP_R16B01
-* OTP_R16B02
-* OTP_R16B03
-
-To select the version for your app:
-
-    $ echo OTP_R15B01 > .preferred_otp_version
-    $ git commit -m "Select R15B01 as preferred OTP version" .preferred_otp_version
-
-### Build your Heroku App
-
-    $ git push heroku master
-
-You may need to write a new commit and push if your code was already up to date.
+    heroku create --buildpack \
+        "https://github.com/yfyf/heroku-buildpack-erlang.git"
