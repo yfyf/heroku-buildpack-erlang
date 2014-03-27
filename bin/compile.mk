@@ -14,6 +14,7 @@ REBAR_BIN_CACHED=$(CACHE_DIR)/rebar$(VSN)
 HEROKU_APP_PATH=/app/
 OTP_APP_PATH=/app/otp
 PATHS_FILE=$(PROFILE_D)/paths.sh
+PROCFILE=$(BUILD_DIR)/Procfile
 EXTENDED_PATH=$(OTP_APP_PATH)/bin:$$PATH
 
 ERLROOT=$(abspath $(BUILD_DIR)/otp)
@@ -24,7 +25,10 @@ compile: $(BUILD_DIR)/Makefile deps
 	export PATH=$(EXTENDED_PATH) && \
 		 $(MAKE) -C $(BUILD_DIR)
 
-deps: $(DIRS) erlang rebar $(PATHS_FILE)
+deps: $(DIRS) erlang rebar $(PATHS_FILE) $(PROCFILE)
+
+$(PROCFILE):
+	echo 'web: make go' > $@
 
 $(PATHS_FILE): $(PROFILE_D)
 	echo 'PATH=$(EXTENDED_PATH)' > $@
